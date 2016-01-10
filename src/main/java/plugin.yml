@@ -1,0 +1,5 @@
+name: HorseTeleport
+author: verso
+description: A horse teleporting plugin for spigot
+main: HorseTeleport.HorseTeleport
+version: 1.0
