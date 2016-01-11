@@ -1,8 +1,6 @@
 package Listener;
 
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Horse;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,6 +8,8 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.plugin.Plugin;
+
+import HorseTeleport.HorseTeleporter;
 
 public class TeleportListener implements Listener {
 	
@@ -21,20 +21,33 @@ public class TeleportListener implements Listener {
 	
 	@EventHandler
 	public void onCommandExecute(PlayerCommandPreprocessEvent event) {
-		Player player = event.getPlayer();
+		Player executingPlayer = event.getPlayer();
+		Player teleportingPlayer = null;
 		String chat = event.getMessage();
 		String command = chat.substring(1, chat.length());
 		
 		if(command.startsWith("tp") || command.startsWith("warp") || command.startsWith("home") || command.startsWith("spawn")) {
-			if(player.isInsideVehicle() && player.getVehicle().getType().equals(EntityType.HORSE)) {
-				Horse horse = (Horse) player.getVehicle();
-				horse.eject();
-				player.performCommand(command);
-				horse.teleport(player.getLocation());
-				horse.setPassenger(player);
-				event.setCancelled(true);
-				return;
+			if(command.startsWith("tphere") || command.startsWith("tpahere")) {
+				String playerTeleportingName = null;
+				if(command.startsWith("tphere")) {
+					playerTeleportingName = command.substring(7);
+				}
+				if(command.startsWith("tpahere")) {
+					playerTeleportingName = command.substring(8);
+				}
+				
+				for(Player p : Bukkit.getOnlinePlayers()) {
+					if(p.getName().equals(playerTeleportingName)) {
+						teleportingPlayer = p;
+					}
+				}
 			}
+			
+			if(teleportingPlayer.equals(null)) {
+				teleportingPlayer = executingPlayer;
+			}
+			
+			event.setCancelled(HorseTeleporter.teleport(executingPlayer, teleportingPlayer, command));
 			return;
 		}
 		return;
