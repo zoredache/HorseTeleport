@@ -5,8 +5,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.plugin.Plugin;
 
 import HorseTeleport.HorseTeleporter;
@@ -24,7 +22,7 @@ public class TeleportListener implements Listener {
 		Player executingPlayer = event.getPlayer();
 		Player teleportingPlayer = null;
 		String chat = event.getMessage();
-		String command = chat.substring(1, chat.length());
+		String command = chat.substring(1, chat.length()).toLowerCase();
 		
 		if(command.startsWith("tp") || command.startsWith("warp") || command.startsWith("home") || command.startsWith("spawn")) {
 			if(command.startsWith("tphere") || command.startsWith("tpahere")) {
@@ -41,13 +39,16 @@ public class TeleportListener implements Listener {
 						teleportingPlayer = p;
 					}
 				}
+				
+				if(HorseTeleporter.teleport(executingPlayer, teleportingPlayer, command)) {
+					event.setCancelled(true);
+				}
+				return;
 			}
-			
-			if(teleportingPlayer.equals(null)) {
-				teleportingPlayer = executingPlayer;
+
+			if(HorseTeleporter.teleport(executingPlayer, executingPlayer, command)) {
+				event.setCancelled(true);
 			}
-			
-			event.setCancelled(HorseTeleporter.teleport(executingPlayer, teleportingPlayer, command));
 			return;
 		}
 		return;
