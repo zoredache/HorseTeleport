@@ -24,27 +24,8 @@ public class TeleportListener implements Listener {
 		String chat = event.getMessage();
 		String command = chat.substring(1, chat.length()).toLowerCase();
 		
-		if(command.startsWith("tp") || command.startsWith("warp") || command.startsWith("home") || command.startsWith("spawn")) {
-			if(command.startsWith("tphere") || command.startsWith("tpahere")) {
-				String playerTeleportingName = null;
-				if(command.startsWith("tphere")) {
-					playerTeleportingName = command.substring(7);
-				}
-				if(command.startsWith("tpahere")) {
-					playerTeleportingName = command.substring(8);
-				}
-				
-				for(Player p : Bukkit.getOnlinePlayers()) {
-					if(p.getName().equals(playerTeleportingName)) {
-						teleportingPlayer = p;
-					}
-				}
-				
-				if(HorseTeleporter.teleport(executingPlayer, teleportingPlayer, command)) {
-					event.setCancelled(true);
-				}
-				return;
-			}
+		if(command.startsWith("tp ") || command.startsWith("tpa ") ||
+                   command.startsWith("home") || command.startsWith("warp ")) {
 
 			if(HorseTeleporter.teleport(executingPlayer, executingPlayer, command)) {
 				event.setCancelled(true);
